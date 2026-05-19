@@ -12,4 +12,16 @@ readonly class DogDto
         public ?string $weightImperial,
         public ?string $lifeSpan,
     ) {}
+
+    public static function fromApiResponse(array $data): self
+    {
+        return new self(
+            externalId: $data['id'],
+            name: $data['name'],
+            temperament: $data['temperament'] ?? null,
+            weightMetric: $data['weight']['metric'] ?? null,
+            weightImperial: $data['weight']['imperial'] ?? null,
+            lifeSpan: $data['life_span'] ?? null,
+        );
+    }
 }

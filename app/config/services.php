@@ -28,6 +28,11 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'dog_api' => [
+        'base_url' => env('DOG_API_BASE_URL', 'https://api.thedogapi.com/v1'),
+        'key' => env('DOG_API_KEY'),
+    ],
+
     'slack' => [
         'notifications' => [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
