@@ -1,0 +1,55 @@
+x-app-base: &app-base
+  build:
+    context: ./docker/app
+  env_file: .env
+  volumes:
+    - ./app:/var/www/html
+  depends_on:
+    db:
+      condition: service_healthy
+  networks:
+    - app_network
+
+services:
+  app:
+    <<: *app-base
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "8081:80"
+    volumes:
+      - ./app/public:/var/www/html/public
+      - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+    networks:
+      - app_network
+
+  db:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p${DB_PASSWORD}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - app_network
+
+  scheduler:
+    <<: *app-base
+    command: ["php", "artisan", "schedule:work"]
+
+networks:
+  app_network:
+    driver: bridge
+
+volumes:
+  db_data:
