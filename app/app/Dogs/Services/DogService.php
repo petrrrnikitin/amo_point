@@ -4,7 +4,7 @@ namespace App\Dogs\Services;
 
 use App\Dogs\DTOs\DogDto;
 use App\Dogs\Repositories\Contracts\DogRepositoryInterface;
-use Illuminate\Support\Collection;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\LazyCollection;
 
 readonly class DogService
@@ -16,13 +16,16 @@ readonly class DogService
     /** @param LazyCollection<int, DogDto> $breeds */
     public function store(LazyCollection $breeds): void
     {
+        $breeds->each(function (DogDto $dogDto): void {
+           $this->repository->save($dogDto);
+        });
         foreach ($breeds as $dto) {
             $this->repository->save($dto);
         }
     }
 
-    public function getAll(): Collection
+    public function paginate(int $perPage): LengthAwarePaginator
     {
-        return $this->repository->getAll();
+        return $this->repository->paginate($perPage);
     }
 }

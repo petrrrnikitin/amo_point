@@ -5,7 +5,7 @@ namespace App\Dogs\Repositories;
 use App\Dogs\DTOs\DogDto;
 use App\Dogs\Models\Dog;
 use App\Dogs\Repositories\Contracts\DogRepositoryInterface;
-use Illuminate\Support\Collection;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class EloquentDogRepository implements DogRepositoryInterface
 {
@@ -23,8 +23,8 @@ class EloquentDogRepository implements DogRepositoryInterface
         );
     }
 
-    public function getAll(): Collection
+    public function paginate(int $perPage): LengthAwarePaginator
     {
-        return Dog::orderBy('name')->get();
+        return Dog::orderBy('name')->paginate($perPage);
     }
 }

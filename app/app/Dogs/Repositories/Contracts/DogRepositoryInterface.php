@@ -3,12 +3,11 @@
 namespace App\Dogs\Repositories\Contracts;
 
 use App\Dogs\DTOs\DogDto;
-use Illuminate\Support\Collection;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 interface DogRepositoryInterface
 {
     public function save(DogDto $dto): void;
 
-    /** @return Collection<int, \App\Dogs\Models\Dog> */
-    public function getAll(): Collection;
+    public function paginate(int $perPage): LengthAwarePaginator;
 }
